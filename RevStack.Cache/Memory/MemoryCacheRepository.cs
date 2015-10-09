@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.Caching;
+using RevStack.Pattern;
 
 namespace RevStack.Cache
 {
-    public class MemoryCacheRepository : BaseCacheRepository
+    public class MemoryCacheRepository<TEntity,TKey> : CacheRepository<TEntity,TKey> where TEntity :class,IEntity<TKey>
     {
         protected MemoryCache _context;
         protected CacheItemPolicy _policy;
@@ -31,11 +32,15 @@ namespace RevStack.Cache
         {
             foreach (var e in _context)
             {
-                _context.Remove(e.Key.ToString());
+                string key = e.Key.ToString();
+                if (_context[key].GetType() == typeof(TEntity))
+                {
+                    _context.Remove(key);
+                }
             }
         }
 
-        public override TEntity Get<TEntity>(string key)
+        public override TEntity Get(string key)
         {
             return (TEntity)_context.Get(key);
         }
@@ -45,7 +50,7 @@ namespace RevStack.Cache
             _context.Remove(key);
         }
 
-        public override void Set<TEntity>(string key, TEntity entity)
+        public override void Set(string key, TEntity entity)
         {
             _context.Set(key, entity, _policy);
         }

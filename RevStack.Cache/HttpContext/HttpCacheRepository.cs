@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Web;
 using HttpCache = System.Web.Caching.Cache;
+using RevStack.Pattern;
 
 namespace RevStack.Cache
 {
-    public class HttpCacheRepository : BaseCacheRepository
+    public class HttpCacheRepository<TEntity,TKey> : CacheRepository<TEntity,TKey> where TEntity : class, IEntity<TKey>
     {
         
         protected HttpContextBase _context;
@@ -24,11 +25,15 @@ namespace RevStack.Cache
             var cache = _context.Cache;
             foreach (DictionaryEntry e in cache)
             {
-                cache.Remove(e.Key.ToString());
+                string key = e.Key.ToString();
+                if (cache[key].GetType() == typeof(TEntity))
+                {
+                    cache.Remove(key);
+                }
             }
         }
 
-        public override TEntity Get<TEntity>(string key)
+        public override TEntity Get(string key)
         {
             return (TEntity)_context.Cache[key];
         }
@@ -38,7 +43,7 @@ namespace RevStack.Cache
             _context.Cache.Remove(key);
         }
 
-        public override void Set<TEntity>(string key, TEntity entity)
+        public override void Set(string key, TEntity entity)
         {
             _context.Cache.Insert(key, entity, null, DateTime.Now.AddHours(_hours), HttpCache.NoSlidingExpiration);
         }

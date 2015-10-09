@@ -1,16 +1,17 @@
 ﻿using System;
-
 using System.Threading.Tasks;
+using RevStack.Pattern;
 
-namespace RevStack.Cache
+namespace RevStack.Cache.CacheService
 {
-    public class CacheService : ICacheService
+    public class CacheService<TEntity, TKey> : Service<TEntity, TKey>, ICacheService<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
-        protected ICacheRepository _repository;
-        public CacheService(ICacheRepository repository)
+        protected new ICacheRepository<TEntity,TKey> _repository;
+        public CacheService(ICacheRepository<TEntity,TKey> repository) :base(repository)
         {
             _repository = repository;
         }
+
         public void Clear()
         {
             _repository.Clear();
@@ -22,25 +23,14 @@ namespace RevStack.Cache
             return Task.FromResult(true);
         }
 
-        public TEntity Get<TEntity>(string key)
+        public TEntity Get(string key)
         {
-            return _repository.Get<TEntity>(key);
+            return _repository.Get(key);
         }
 
-        public Task<TEntity> GetAsync<TEntity>(string key)
+        public Task<TEntity> GetAsync(string key)
         {
-            return Task.FromResult(Get<TEntity>(key));
-        }
-
-        public void Set<TEntity>(string key, TEntity entity)
-        {
-            _repository.Set(key, entity);
-        }
-
-        public Task SetAsync<TEntity>(string key, TEntity entity)
-        {
-            Set(key, entity);
-            return Task.FromResult(true);
+            return Task.FromResult(Get(key));
         }
 
         public void Remove(string key)
@@ -53,8 +43,16 @@ namespace RevStack.Cache
             Remove(key);
             return Task.FromResult(true);
         }
+
+        public void Set(string key, TEntity entity)
+        {
+            _repository.Set(key, entity);
+        }
+
+        public Task SetAsync(string key, TEntity entity)
+        {
+            Set(key, entity);
+            return Task.FromResult(true);
+        }
     }
-
-
-
 }

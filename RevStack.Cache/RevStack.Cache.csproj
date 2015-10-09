@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RevStack.Pattern">
+      <HintPath>..\..\RevStack.Pattern\RevStack.Pattern\bin\Release\RevStack.Pattern.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Caching" />
@@ -42,18 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CacheEntity\CacheEntity.cs" />
-    <Compile Include="CacheRepository\BaseCacheRepository.cs" />
+    <Compile Include="CacheRepository\CacheRepository.cs" />
     <Compile Include="CacheRepository\ICacheRepository.cs" />
-    <Compile Include="CacheRepository\ITypedCacheRepository.cs" />
     <Compile Include="CacheService\CacheService.cs" />
     <Compile Include="CacheService\ICacheService.cs" />
-    <Compile Include="CacheService\ITypedCacheService.cs" />
-    <Compile Include="CacheService\TypedCacheService.cs" />
     <Compile Include="HttpContext\HttpCacheRepository.cs" />
-    <Compile Include="HttpContext\TypedHttpCacheRepository.cs" />
     <Compile Include="Memory\MemoryCacheRepository.cs" />
-    <Compile Include="Memory\TypedMemoryCacheRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
